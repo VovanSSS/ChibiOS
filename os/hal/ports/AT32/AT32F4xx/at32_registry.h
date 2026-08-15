@@ -143,6 +143,10 @@
 /* DMA attributes.*/
 #define STM32_ADVANCED_DMA                  TRUE
 #define STM32_DMA_SUPPORTS_DMAMUX           TRUE
+/* The AT32 DMA1/DMA2 have an integrated DMAMUX: TBL_SEL must be set to
+ * flexible mapping mode, otherwise the per-channel REQSEL programming is
+ * ignored and channels serve their fixed default requests only (which makes
+ * everything except ADC1-on-channel-1 silently dead). */
 #define STM32_DMA_HAS_DMAMUXSEL             TRUE
 //#define STM32_DMA_SUPPORTS_DMAMUX           TRUE
 #define STM32_DMA_SUPPORTS_CSELR            FALSE
