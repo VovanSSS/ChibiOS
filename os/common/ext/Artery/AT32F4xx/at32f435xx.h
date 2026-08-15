@@ -394,10 +394,14 @@ typedef struct
 {
   __IO uint32_t ISR;    /*!< DMA interrupt status register,                 Address offset: 0x00 */
   __IO uint32_t IFCR;   /*!< DMA interrupt flag clear register,             Address offset: 0x04 */
-  DMA_Channel_TypeDef ch[7];
+  /* NOTE: hardware channel stride is 0x14 (DMA1_CHANNELx_BASE macros), the
+   * ch[] array below is only a placeholder and MUST NOT be used - the LLD
+   * addresses channels through the DMA1_Channelx base macros. */
+  DMA_Channel_TypeDef ch[7]; /* 0x08..0x74 */
+  uint32_t RESERVED0[34];    /* 0x78..0xFC */
   __IO uint32_t MUXSEL; /*!< DMA MUX selection register,                    Address offset: 0x100 */
-  DMAMUX_Channel_TypeDef MUXC[7];
-  DMAMUX_Channel_TypeDef MUXG[4];
+  DMAMUX_Channel_TypeDef MUXC[7]; /* 0x104..0x11C */
+  DMAMUX_Channel_TypeDef MUXG[4]; /* 0x120..0x12C */
 } DMA_TypeDef;
 
 /** 

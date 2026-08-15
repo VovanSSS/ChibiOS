@@ -132,6 +132,13 @@ void hal_lld_init(void) {
 
   /* DMA subsystems initialization.*/
 #if defined(STM32_DMA_REQUIRED)
+  /* AT32: the DMA clocks must be on before touching the registers. dmaInit()
+   * programs DMA_MUXSEL (TBL_SEL = flexible request mapping); writes to an
+   * unclocked DMA are silently dropped, leaving the fixed default request
+   * table active - then only channels whose default request matches their
+   * peripheral work (ADC1 on CH1), everything else (e.g. ADC2) is dead. */
+  rccEnableDMA1(false);
+  rccEnableDMA2(false);
   dmaInit();
 #endif
 
