@@ -185,6 +185,14 @@ void __dbg_check_lock_from_isr(void) {
 
   if (unlikely((oip->dbg.isr_cnt <= (cnt_t)0) ||
                (oip->dbg.lock_cnt != (cnt_t)0))) {
+    /* rusEFI debug aid: record the caller of chSysLockFromISR() and the dbg
+     * counters so the assert crash marker can report the real call site
+     * (the stored panic line is always the chsys.c halt hook, 220). */
+    extern uint32_t rusEfiLastSv6Caller;
+    extern uint32_t rusEfiLastSv6State;
+    rusEfiLastSv6Caller = (uint32_t)__builtin_return_address(0);
+    rusEfiLastSv6State  = ((uint32_t)(uint16_t)oip->dbg.lock_cnt << 16) |
+                           (uint32_t)(uint16_t)oip->dbg.isr_cnt;
     chSysHalt("SV#6");
   }
   oip->dbg.lock_cnt = (cnt_t)1;
