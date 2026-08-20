@@ -422,6 +422,14 @@ void chSysTimerHandlerI(void) {
  */
 syssts_t chSysGetStatusAndLockX(void) {
 
+  /* rusEFI debug aid: record the caller and the IPSR (active exception) so
+   * the assert crash marker can identify the context when this X-class lock
+   * later trips SV#6 in chSysLockFromISR (fast IRQ without OSAL prologue). */
+  extern uint32_t rusEfiLastXLockCaller;
+  extern uint32_t rusEfiLastXLockState;
+  rusEfiLastXLockCaller = (uint32_t)__builtin_return_address(0);
+  __asm volatile ("mrs %0, IPSR" : "=r" (rusEfiLastXLockState));
+
   syssts_t sts = port_get_lock_status();
   if (!port_is_locked(sts)) {
     if (port_is_isr_context()) {
