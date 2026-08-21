@@ -7169,6 +7169,11 @@ typedef struct
 #define FLASH_DIVR_FDIV_STS_Msk        (0x3U << FLASH_DIVR_FDIV_STS_Pos)       /*!< 0x00000030 */
 #define FLASH_DIVR_FDIV_STS            FLASH_DIVR_FDIV_STS_Msk                 /*!< Flash clock divider status */
 
+/*******************  Bits definition for FLASH_CONTR register  ****************/
+#define FLASH_CONTR_FCONTR_EN_Pos      (31U)
+#define FLASH_CONTR_FCONTR_EN_Msk      (0x1U << FLASH_CONTR_FCONTR_EN_Pos)     /*!< 0x80000000 */
+#define FLASH_CONTR_FCONTR_EN          FLASH_CONTR_FCONTR_EN_Msk               /*!< Flash continue read (prefetch) enable */
+
 /*******************  Bits definition for FLASH_STS register  *****************/
 #define FLASH_STS_OBF_Pos              (0U)                                   
 #define FLASH_STS_OBF_Msk              (0x1U << FLASH_STS_OBF_Pos)             /*!< 0x00000001 */
