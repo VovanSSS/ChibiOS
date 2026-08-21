@@ -171,11 +171,15 @@ void stm32_clock_init(void) {
   /* config ldo voltage */
   PWR->LDOOV = PWR_LDOOV_1V3;
 
-#if 0
-  /* Flash setup.*/
-  /* set the flash clock divider */
-  flash_clock_divider_set(FLASH_CLOCK_DIV_3);
-#endif
+  /* Flash setup. AT32F435/437 has no ACR: the flash clock divider lives in
+     FLASH->DIVR[1:0] (0=/2, 1=/3, 2=/4) and must be programmed while HCLK is
+     still low (HCLK is currently HICK). With the 288 MHz configuration the
+     /3 divider gives the required 96 MHz flash clock (the AT32F435 flash
+     clock limit is 100 MHz). NZW_BST (PSR bit 12) enables the non-zero-wait
+     boost for the wait-state access path.
+     Reference: ChibiOS-Contrib AT32F435_437 port, at32_clock_init(). */
+  FLASH1->DIVR = (FLASH1->DIVR & ~FLASH_DIVR_FDIV_Msk) | FLASH_DIVR_FDIV_3;
+  FLASH1->PSR &= ~FLASH_PSR_NZW_BST_Msk;
 
   /* HSI setup, it enforces the reset situation in order to handle possible
      problems with JTAG probes and re-initializations.*/
