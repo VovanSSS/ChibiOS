@@ -177,16 +177,16 @@ void stm32_clock_init(void) {
      /3 divider gives the required 96 MHz flash clock (the AT32F435 flash
      clock limit is 100 MHz).
      FLASH->CONTR bit 31 enables the continue-read (prefetch) path.
-     NZW_BST (PSR bit 12) boosts the non-zero-wait flash area - most of a
-     668 KB rusEFI image lives there (the zero-wait area is only 128-512 KB,
-     selected by the USD EOPB0 option byte). It MUST be written before the
-     PLL switch: a live write at full HCLK hangs the flash read path (hard
-     lockup, no fault, power-cycle recovery; observed on m74_9 2026-08-21).
+     NZW_BST (PSR bit 12) must stay OFF: enabling it - at boot before the
+     PLL switch AND as a live write at full HCLK - both hang the flash read
+     path (hard lockup, no fault, power-cycle recovery; observed on m74_9
+     2026-08-21, three times). The Artery SDK reference configs never enable
+     it either.
      Reference: ChibiOS-Contrib AT32F435_437 port, at32_clock_init(), and
      Artery AT32F435_437_Firmware_Library at32f435_437_flash.c/.h. */
   FLASH1->DIVR = (FLASH1->DIVR & ~FLASH_DIVR_FDIV_Msk) | FLASH_DIVR_FDIV_3;
   FLASH1->CONTR |= FLASH_CONTR_FCONTR_EN;
-  FLASH1->PSR |= FLASH_PSR_NZW_BST;
+  FLASH1->PSR &= ~FLASH_PSR_NZW_BST_Msk;
 
   /* HSI setup, it enforces the reset situation in order to handle possible
      problems with JTAG probes and re-initializations.*/
